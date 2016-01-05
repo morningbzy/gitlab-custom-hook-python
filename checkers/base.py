@@ -9,6 +9,7 @@ class Checker(object):
         self.new = new
         self.ref = ref
         self.opts = self.__dict__
+        self.OK = True
 
     def get_commits(self):
         """Get all of the commits between self.old and self.new
@@ -23,10 +24,11 @@ class Checker(object):
             return []
         # Creating branch
         elif self.old.startswith(ZERO):
-            cmd = """git rev-list $(git for-each-ref --format='%%(refname)' refs/heads/* | grep -x -v '%(ref)s' | sed 's/^/\^/') %(new)s""" % self.opts
+            cmd = """git rev-list $(git for-each-ref --format='%%(refname)' refs/heads/** | grep -x -v '%(ref)s' | sed 's/^/\^/') %(new)s""" % self.opts
         else:
             cmd = """git rev-list %(old)s..%(new)s""" % self.opts
 
+        logging.debug('Executing: %s' % cmd)
         return os.popen(cmd).readlines()
 
     def get_commit_messages(self):

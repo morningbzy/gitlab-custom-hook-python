@@ -8,7 +8,9 @@ from .base import Checker
 
 
 class AuthorChecker(Checker):
-    """Check whether the push author is in the settings.AUTHORS or not. Reject if not."""
+    """Check whether the push author is in the settings.AUTHORS or not.
+    Reject if not.
+    """
     def check(self):
         # Get the author name
         name = self.get_commit_author(self.new)
@@ -16,18 +18,20 @@ class AuthorChecker(Checker):
         # Get the reviewers
         reviewers = get_reviewers(name)
 
-        # Pre-check whether the name and all reviewers are in the AUTHORS or not.
+        # check the name and all reviewers
         checklist = list(reviewers) + [name]
         for checking in checklist:
             if checking not in settings.AUTHORS:
                 return self.error('Name "%s" is not in author list. Please '
                                   'check your commit author name, or contact '
                                   'adminto add you in the list.' % checking)
-        return True
+        return self.OK
 
 
 class JiraTaskIdChecker(Checker):
-    """Check whether the commit messages contains JIRA task ID. Warn if not."""
+    """Check whether the commit messages contains 'Merge' or a JIRA task ID.
+    Warn if not.
+    """
 
     def check(self):
         regex = r'Merge|[A-Z]{,10}-\d+'
@@ -40,7 +44,7 @@ class JiraTaskIdChecker(Checker):
                     + '\nCommit %s:\n\n%s\n' % (commit, commit_message.strip())\
                     + '-' * 80
                 return self.warning(warning_txt)
-        return True
+        return self.OK
 
 
 class MultiCommitsChecker(Checker):
@@ -58,4 +62,4 @@ class UnclosedCodereviewRequestChecker(Checker):
     """
     def check(self):
         # TODO
-        return True
+        return self.OK
