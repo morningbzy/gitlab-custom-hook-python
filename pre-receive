@@ -3,6 +3,9 @@ from importlib import import_module
 import logging
 import re
 import sys
+import os
+
+sys.path.insert(0, os.path.abspath(__file__).rsplit('/', 1)[0])
 
 import settings
 

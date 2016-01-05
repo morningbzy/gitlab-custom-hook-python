@@ -1,6 +1,5 @@
 
 import re
-import logging
 
 import settings
 from utils import get_reviewers
@@ -43,16 +42,16 @@ class JiraTaskIdChecker(Checker):
                     + '-' * 80\
                     + '\nCommit %s:\n\n%s\n' % (commit, commit_message.strip())\
                     + '-' * 80
-                return self.warning(warning_txt)
+                self.warning(warning_txt)
         return self.OK
 
 
 class MultiCommitsChecker(Checker):
     def check(self):
         for commit_message in self.get_commit_messages(self.old, self.new):
-            logging.debug(commit_message)
+            self.logger.debug(commit_message)
             break
-        logging.debug(len(self.get_commits()))
+        self.logger.debug(len(self.get_commits()))
         return commit_message.startswith('Merge') or len(self.get_commits()) < 2
 
 

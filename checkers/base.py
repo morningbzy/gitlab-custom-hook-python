@@ -11,6 +11,9 @@ class Checker(object):
         self.opts = self.__dict__
         self.OK = True
 
+        self.logger = logging.Logger(self.__class__.__name__,
+                                     level=logging.DEBUG)
+
     def get_commits(self):
         """Get all of the commits between self.old and self.new
 
@@ -28,7 +31,7 @@ class Checker(object):
         else:
             cmd = """git rev-list %(old)s..%(new)s""" % self.opts
 
-        logging.debug('Executing: %s' % cmd)
+        self.logger.debug('Executing: %s' % cmd)
         return os.popen(cmd).readlines()
 
     def get_commit_messages(self):
@@ -46,10 +49,10 @@ class Checker(object):
 
     def warning(self, txt):
         """Warning, display the warning message, but not reject"""
-        logging.warning('\n%s\n' % txt)
+        self.logger.warning('\n%s\n' % txt)
         return True
 
     def error(self, txt):
         """Error, reject and display the error message"""
-        logging.error('\n%s\n' % txt)
+        self.logger.error('\n%s\n' % txt)
         return False
