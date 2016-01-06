@@ -10,9 +10,17 @@ class Checker(object):
         self.ref = ref
         self.opts = self.__dict__
         self.OK = True
+        self.__logger = None
 
-        self.logger = logging.Logger(self.__class__.__name__,
-                                     level=logging.DEBUG)
+    @property
+    def logger(self):
+        if self.__logger is None:
+            self.__logger = logging.getLogger(self.__class__.__name__)
+            hdlr = logging.StreamHandler()
+            hdlr.setFormatter(logging.Formatter("%(levelname)s:%(message)s"))
+            self.__logger.addHandler(hdlr)
+            self.__logger.setLevel(level=logging.DEBUG)
+        return self.__logger
 
     def get_commits(self):
         """Get all of the commits between self.old and self.new
