@@ -2,6 +2,8 @@
 import os
 import logging
 
+import settings
+
 
 class Checker(object):
     def __init__(self, old, new, ref):
@@ -19,7 +21,9 @@ class Checker(object):
             hdlr = logging.StreamHandler()
             hdlr.setFormatter(logging.Formatter("%(levelname)s:%(message)s"))
             self.__logger.addHandler(hdlr)
-            self.__logger.setLevel(level=logging.DEBUG)
+            self.__logger.setLevel(level=getattr(settings,
+                                                 'LOGGER_LEVEL',
+                                                 'WARN'))
         return self.__logger
 
     def get_commits(self):
