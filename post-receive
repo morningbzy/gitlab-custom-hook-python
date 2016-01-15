@@ -1,0 +1,28 @@
+#!/usr/bin/python
+
+import os
+import sys
+
+from utils.git import get_commit_author
+from utils.reviewboard import get_reviewers
+import settings
+
+
+if __name__ == '__main__':
+    for line in sys.stdin.xreadlines():
+        old, new, ref = line.strip().split(' ')
+
+        old = '' if old.startswith('000000') else old
+
+        name = get_commit_author(new)
+        reviewers = ','.join(get_reviewers(name))
+
+        cmd = 'rbt post -p --username=%(username)s --password=%(password)s --submit-as=%(author)s --target-people %(reviewers)s %(old)s %(new)s'\
+            % {'old': old, 'new': new, 'ref': ref,
+               'author': name, 'reviewers': reviewers,
+               'username': settings.REVIEWBOARD_USERNAME,
+               'password': settings.REVIEWBOARD_PASSWORD}
+
+        result = os.popen(cmd).readlines()
+
+    sys.stdout.flush()

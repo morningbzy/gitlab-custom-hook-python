@@ -1,9 +1,8 @@
 
 import re
 
-import settings
-from utils import get_reviewers
 from .base import Checker
+import settings
 
 
 class AuthorChecker(Checker):
@@ -13,17 +12,10 @@ class AuthorChecker(Checker):
     def check(self):
         # Get the author name
         name = self.get_commit_author(self.new)
-
-        # Get the reviewers
-        reviewers = get_reviewers(name)
-
-        # check the name and all reviewers
-        checklist = list(reviewers) + [name]
-        for checking in checklist:
-            if checking not in settings.AUTHORS:
-                return self.error('Name "%s" is not in author list. Please '
-                                  'check your commit author name, or contact '
-                                  'adminto add you in the list.' % checking)
+        if name not in settings.AUTHORS:
+            return self.error('Name "%s" is not in author list. Please '
+                              'check your commit author name, or contact '
+                              'adminto add you in the list.' % name)
         return self.OK
 
 
@@ -31,7 +23,6 @@ class JiraTaskIdChecker(Checker):
     """Check whether the commit messages contains 'Merge' or a JIRA task ID.
     Warn if not.
     """
-
     def check(self):
         regex = r'Merge|[A-Z]{,10}-\d+'
 

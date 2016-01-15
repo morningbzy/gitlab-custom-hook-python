@@ -1,1 +1,1 @@
-# gitlab-pre-receive-hook-python
+# gitlab-custom-hook-python
