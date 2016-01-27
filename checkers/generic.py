@@ -10,12 +10,14 @@ class AuthorChecker(Checker):
     Reject if not.
     """
     def check(self):
-        # Get the author name
-        name = self.get_commit_author(self.new)
-        if name not in settings.AUTHORS:
-            return self.error('Name "%s" is not in author list. Please '
-                              'check your commit author name, or contact '
-                              'adminto add you in the list.' % name)
+        ZERO = '0000000'
+        if not self.new.startswith(ZERO):
+            # Get the author name
+            name = self.get_commit_author(self.new)
+            if name not in settings.AUTHORS:
+                return self.error('Name "%s" is not in author list. Please '
+                                  'check your commit author name, or contact '
+                                  'adminto add you in the list.' % name)
         return self.OK
 
 
